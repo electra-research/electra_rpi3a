@@ -68,7 +68,11 @@ defmodule NervesSystemRpi3a.MixProject do
   defp deps do
     [
       {:nerves, "~> 1.11", runtime: false},
-      {:nerves_system_br, git: "https://github.com/nerves-project/nerves_system_br", runtime: false},
+      # nerves_system_br determines the buildroot version which determines
+      # what software versions we use for core dependencies on firmware systems.
+      # ideally we should keep it up to date, but different buildroot versions seem
+      # to require unpredictable manual fixes depending on the builder's system.
+      {:nerves_system_br, "~> 1.31.5", runtime: false},
       {:nerves_toolchain_armv7_nerves_linux_gnueabihf, "~> 13.2.0", runtime: false},
       {:nerves_system_linter, "~> 0.4", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.22", only: :docs, runtime: false}
