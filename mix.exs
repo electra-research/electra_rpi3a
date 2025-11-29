@@ -39,91 +39,79 @@ defmodule NervesSystemRpi3a.MixProject do
     Mix.Task.run("loadconfig", args)
   end
 
-  defp nerves_package do
-    [
-      type: :system,
-      artifact_sites: [
-        {:github_releases, "#{@github_organization}/#{@app}"}
-      ],
-      build_runner_opts: build_runner_opts(),
-      platform: Nerves.System.BR,
-      platform_config: [
-        defconfig: "nerves_defconfig"
-      ],
-      # The :env key is an optional experimental feature for adding environment
-      # variables to the crosscompile environment. These are intended for
-      # llvm-based tooling that may need more precise processor information.
-      env: [
-        {"TARGET_ARCH", "arm"},
-        {"TARGET_CPU", "cortex_a53"},
-        {"TARGET_OS", "linux"},
-        {"TARGET_ABI", "gnueabihf"},
-        {"TARGET_GCC_FLAGS",
-         "-mabi=aapcs-linux -mfpu=neon-fp-armv8 -marm -fstack-protector-strong -mfloat-abi=hard -mcpu=cortex-a53 -fPIE -pie -Wl,-z,now -Wl,-z,relro"}
-      ],
-      checksum: package_files()
-    ]
-  end
+  defp nerves_package, do: [
+    type: :system,
+    artifact_sites: [
+      {:github_releases, "#{@github_organization}/#{@app}"}
+    ],
+    build_runner_opts: build_runner_opts(),
+    platform: Nerves.System.BR,
+    platform_config: [
+      defconfig: "nerves_defconfig"
+    ],
+    # The :env key is an optional experimental feature for adding environment
+    # variables to the crosscompile environment. These are intended for
+    # llvm-based tooling that may need more precise processor information.
+    env: [
+      {"TARGET_ARCH", "arm"},
+      {"TARGET_CPU", "cortex_a53"},
+      {"TARGET_OS", "linux"},
+      {"TARGET_ABI", "gnueabihf"},
+      {"TARGET_GCC_FLAGS",
+       "-mabi=aapcs-linux -mfpu=neon-fp-armv8 -marm -fstack-protector-strong -mfloat-abi=hard -mcpu=cortex-a53 -fPIE -pie -Wl,-z,now -Wl,-z,relro"}
+    ],
+    checksum: package_files()
+  ]
 
-  defp deps do
-    [
-      {:nerves, "~> 1.11", runtime: false},
-      # nerves_system_br determines the buildroot version which determines
-      # what software versions we use for core dependencies on firmware systems.
-      # ideally we should keep it up to date, but different buildroot versions seem
-      # to require unpredictable manual fixes depending on the builder's system.
-      {:nerves_system_br, "~> 1.31.5", runtime: false},
-      {:nerves_toolchain_armv7_nerves_linux_gnueabihf, "~> 13.2.0", runtime: false},
-      {:nerves_system_linter, "~> 0.4", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.22", only: :docs, runtime: false}
-    ]
-  end
+  defp deps, do: [
+    {:nerves, "~> 1.11", runtime: false},
+    # nerves_system_br determines the buildroot version which determines
+    # what software versions we use for core dependencies on firmware systems.
+    # ideally we should keep it up to date, but different buildroot versions seem
+    # to require unpredictable manual fixes depending on the builder's system.
+    {:nerves_system_br, "~> 1.31.5", runtime: false},
+    {:nerves_toolchain_armv7_nerves_linux_gnueabihf, "~> 13.2.0", runtime: false},
+    {:nerves_system_linter, "~> 0.4", only: [:dev, :test], runtime: false},
+    {:ex_doc, "~> 0.22", only: :docs, runtime: false}
+  ]
 
-  defp description do
-    """
+  defp description, do: """
     Nerves System - Raspberry Pi 3 A+ and Zero 2 W
-    """
-  end
+"""
 
-  defp docs do
-    [
-      extras: ["README.md", "CHANGELOG.md"],
-      main: "readme",
-      assets: %{"assets" => "./assets"},
-      source_ref: "v#{@version}",
-      source_url: @source_url,
-      skip_undefined_reference_warnings_on: ["CHANGELOG.md"]
-    ]
-  end
+  defp docs, do: [
+    extras: ["README.md", "CHANGELOG.md"],
+    main: "readme",
+    assets: %{"assets" => "./assets"},
+    source_ref: "v#{@version}",
+    source_url: @source_url,
+    skip_undefined_reference_warnings_on: ["CHANGELOG.md"]
+  ]
 
-  defp package do
-    [
-      files: package_files(),
-      licenses: ["Apache-2.0"],
-      links: %{"GitHub" => @source_url}
-    ]
-  end
+  defp package, do: [
+    files: package_files(),
+    licenses: ["Apache-2.0"],
+    links: %{"GitHub" => @source_url}
+  ]
 
-  defp package_files do
-    [
-      "fwup_include",
-      "rootfs_overlay",
-      "CHANGELOG.md",
-      "cmdline.txt",
-      "config.txt",
-      "fwup-ops.conf",
-      "fwup.conf",
-      "LICENSE",
-      "linux-6.6.defconfig",
-      "mix.exs",
-      "nerves_defconfig",
-      "post-build.sh",
-      "post-createfs.sh",
-      "ramoops.dts",
-      "README.md",
-      "VERSION"
-    ]
-  end
+  defp package_files, do: [
+    "fwup_include",
+    "rootfs_overlay",
+    "CHANGELOG.md",
+    "cmdline.txt",
+    "config.txt",
+    "fwup-ops.conf",
+    "fwup.conf",
+    "LICENSE",
+    "linux-6.6.defconfig",
+    "mix.exs",
+    "nerves_defconfig",
+    "post-build.sh",
+    "post-createfs.sh",
+    "ramoops.dts",
+    "README.md",
+    "VERSION"
+  ]
 
   defp build_runner_opts() do
     # Download source files first to get download errors right away.
